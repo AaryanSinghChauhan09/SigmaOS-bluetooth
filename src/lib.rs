@@ -3,4 +3,5 @@
 
 pub mod bluetooth;
 
-pub use bluetooth::BluetoothManager;
+pub use bluetooth::adapter::BluetoothManager;
+pub use bluetooth::*;
