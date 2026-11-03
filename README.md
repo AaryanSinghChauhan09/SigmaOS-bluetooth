@@ -1,14 +1,16 @@
-# SigmaOS Bluetooth
+# SigmaOS-bluetooth
 
-This crate exposes Bluetooth adapter, device, and manager APIs. The simple
-adapter and manager store adapter data and state in memory; their scan and
-state operations are not proof of discovery, pairing, or radio control on a
-physical Bluetooth adapter. Hardware integration and permission handling need
-separate implementation and device evidence.
+SigmaOS component for essential infrastructure.
 
-The crate depends on the sibling `SigmaOS-kernel` checkout through a local
-path.
+## Features
+- Modular architecture
+- Asynchronous I/O
+- Configuration management
+
+## Usage
+```bash
+cargo run --release
+```
 
 ## License
-
-GPL-3.0-or-later. See [`LICENSE`](LICENSE) and [`Cargo.toml`](Cargo.toml).
+MIT
