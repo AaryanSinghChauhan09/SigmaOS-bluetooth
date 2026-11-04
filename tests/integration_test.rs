@@ -1,22 +1,29 @@
 use anyhow::Result;
+use sigmaos_component::{Config, bluetooth};
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_basic_functionality() -> Result<()> {
+    fn test_config_default_aaa() {
+        // Arrange & Act
         let config = Config::default();
-        let result = config.process();
-        assert!(result.is_ok());
-        Ok(())
+        // Assert
+        assert!(config.enabled);
+        assert!(!config.debug);
     }
 
     #[test]
-    fn test_error_handling() -> Result<()> {
-        let invalid_config = Config::new("invalid");
-        let result = invalid_config.process();
-        assert!(result.is_ok());
+    fn test_bluetooth_start_stop_aaa() -> Result<()> {
+        // Arrange
+        let config = Config::default();
+        let mut bt = bluetooth::new(config);
+        // Act
+        bt.initialize()?;
+        bt.start()?;
+        // Assert
+        bt.stop()?;
         Ok(())
     }
 }
