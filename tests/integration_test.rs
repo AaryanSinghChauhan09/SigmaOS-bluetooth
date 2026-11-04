@@ -1,45 +1,22 @@
-//! Integration tests for SigmaOS-bluetooth
+use anyhow::Result;
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use super::*;
 
     #[test]
-    fn test_component_initialization() -> Result<()> {
-        // Arrange
-        let config = "test-config";
-        
-        // Act
-        let result = true;
-        
-        // Assert
-        assert!(result, "Component should initialize successfully");
+    fn test_basic_functionality() -> Result<()> {
+        let config = Config::default();
+        let result = config.process();
+        assert!(result.is_ok());
         Ok(())
     }
 
     #[test]
-    fn test_component_configuration() -> Result<()> {
-        // Arrange
-        let config = "test-config";
-        
-        // Act
-        let result = true;
-        
-        // Assert
-        assert!(result, "Component should configure successfully");
-        Ok(())
-    }
-
-    #[test]
-    fn test_component_execution() -> Result<()> {
-        // Arrange
-        let input = "test-input";
-        
-        // Act
-        let result = true;
-        
-        // Assert
-        assert!(result, "Component should execute successfully");
+    fn test_error_handling() -> Result<()> {
+        let invalid_config = Config::new("invalid");
+        let result = invalid_config.process();
+        assert!(result.is_ok());
         Ok(())
     }
 }

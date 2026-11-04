@@ -1,43 +1,22 @@
-use std::env;
-use log::{info, warn, error, debug};
+mod config;
+mod error;
+mod service;
+
+use config::Config;
+use service::Service;
 use anyhow::Result;
-use clap::Parser;
-use bluetooth::bluetooth;
 
-#[derive(Parser)]
-struct Cli {
-    #[arg(short, long)]
-    debug: bool,
-}
-
-fn main() -> Result<()> { -> Result<()> {
-    let cli = Cli::parse();
-    let config = bluetooth::Config { debug: cli.debug, ..Default::default() };
-    let mut component = bluetooth::new(config);
+fn main() -> Result<()> {
+    env_logger::init();
     
-    component.initialize()?;
-    component.start()?;
+    let config = Config::default();
+    let mut service = Service::new(config);
     
-    println!("SigmaOS-bluetooth running (Ctrl+C to stop)");
-    tokio::runtime::Runtime::new()?.block_on(async {
-        tokio::signal::ctrl_c().await.unwrap();
-    });
+    service.start()?;
+    println!("Service started successfully");
     
-    component.stop()?;
+    service.stop()?;
+    println!("Service stopped successfully");
+    
     Ok(())
-}
-
-#[derive(Debug, Clone)]
-struct Config {
-    verbose: bool,
-    dry_run: bool,
-}
-
-impl Config {
-    fn from_env() -> Self {
-        Config {
-            verbose: env::var("VERBOSE").is_ok(),
-            dry_run: env::var("DRY_RUN").is_ok(),
-        }
-    }
 }

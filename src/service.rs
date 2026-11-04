@@ -1,54 +1,42 @@
-//! Service implementation for SigmaOS-bluetooth
-
-use crate::{Config, Error, Result};
+use crate::config::Config;
+use crate::error::Result;
 use log::{info, error};
-use tokio::sync::RwLock;
-use std::sync::Arc;
 
 pub struct Service {
     config: Config,
-    state: Arc<RwLock<ServiceState>>,
-}
-
-#[derive(Debug, Clone)]
-struct ServiceState {
     running: bool,
-    count: u64,
 }
 
 impl Service {
-    pub fn new(config: Config) -> Result<Self> {
-        Ok(Service {
+    pub fn new(config: Config) -> Self {
+        Service {
             config,
-            state: Arc::new(RwLock::new(ServiceState {
-                running: false,
-                count: 0,
-            })),
-        })
+            running: false,
+        }
     }
 
-    pub async fn run(&self) -> Result<()> {
-        info!("Starting SigmaOS-bluetooth service");
-        
-        let mut state = self.state.write().await;
-        state.running = true;
-        
-        info!("Service started successfully");
+    pub fn start(&mut self) -> Result<()> {
+        if self.running {
+            error!("Service already running");
+            return Err(crate::error::ComponentError::RuntimeError("Service already running".to_string()).into());
+        }
+        info!("Starting service");
+        self.config.process()?;
+        self.running = true;
         Ok(())
     }
 
-    pub async fn stop(&self) -> Result<()> {
-        info!("Stopping SigmaOS-bluetooth service");
-        
-        let mut state = self.state.write().await;
-        state.running = false;
-        
-        info!("Service stopped successfully");
+    pub fn stop(&mut self) -> Result<()> {
+        if !self.running {
+            error!("Service not running");
+            return Err(crate::error::ComponentError::RuntimeError("Service not running".to_string()).into());
+        }
+        info!("Stopping service");
+        self.running = false;
         Ok(())
     }
 
-    pub async fn status(&self) -> Result<bool> {
-        let state = self.state.read().await;
-        Ok(state.running)
+    pub fn is_running(&self) -> bool {
+        self.running
     }
 }
