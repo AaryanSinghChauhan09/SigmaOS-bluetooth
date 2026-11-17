@@ -3,12 +3,12 @@ name = "SigmaOS-bluetooth"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "bluetooth component"
+description = "Bluetooth adapter & device manager"
 upstream = []
 
 [contract]
 provides = ["component"]
-depends_on = []
+depends_on = ["SigmaOS-system"]
 
 [maturity]
 status = "Scaffold"
