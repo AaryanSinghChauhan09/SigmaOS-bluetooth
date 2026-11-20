@@ -1,5 +1,7 @@
 //! SigmaOS-bluetooth: Bluetooth stack model.
 
+pub mod sigmabluetooth;
+
 use std::collections::BTreeMap;
 use std::fmt;
 
